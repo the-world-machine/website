@@ -39,11 +39,12 @@ export default function Page() {
         <Desktop>
             <Window title='Credits :3' className="max-w-[600px]">
                 <Title>Credits</Title>
-                
-                <Header>Created by</Header>
-                <Text>Axiinyaa</Text>
 
-                <Header>Contributors</Header>
+                <Header>Developers</Header>
+                <Text>meqativ</Text>
+                <Text>fily.gif</Text>
+
+                <Header>Past Contributors</Header>
                 <HeaderTwo>Textbox Implementation</HeaderTwo>
                 <Text>RedstoneRuler</Text>
                 <HeaderTwo>Github Contributions</HeaderTwo>
@@ -51,7 +52,12 @@ export default function Page() {
 
                 <Header>Localization</Header>
                 <HeaderTwo>Russian</HeaderTwo>
-                <Text> Mr. Saturn</Text>
+                <Text>Mr. Saturn</Text>
+                <HeaderTwo>Ukrainian</HeaderTwo>
+                <Text>meqative</Text>
+
+                <HeaderTwo>Originally Created by</HeaderTwo>
+                <Text>Axiinyaa</Text>
 
                 <div className="mt-5"/>
 
