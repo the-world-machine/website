@@ -83,17 +83,17 @@ export async function GetLeaderboard(sortBy: string) {
         const userPromises = result.map(async (doc) => {
             const user = await GetDiscordData(doc._id);
 
-            if (user.username === '') {
+            if (user === '') {
                 return null; // Return null if the username is empty
             }
 
-            return { 
-                name: user.username, 
-                type: sortBy, 
-                data: { 
-                    ...doc, 
-                    wool: doc.wool.toLocaleString() 
-                } as UserData 
+            return {
+                name: user,
+                type: sortBy,
+                data: {
+                    ...doc,
+                    wool: doc.wool.toLocaleString()
+                } as UserData
             } as LeaderboardUser; // Ensure the return type is LeaderboardUser
         });
 
@@ -126,10 +126,19 @@ export async function FetchItemData() {
     }
 }
 
-export async function GetDiscordData(userID: string) {
-    const response = await axios.get(`https://discordlookup.mesalytic.moe/v1/user/${userID}`)
+const users: any = {};
 
-    return response.data;
+export async function GetDiscordData(userID: string) {
+
+    if (users[userID] === undefined) {
+        const response = await axios.get(`https://discord.com/api/users/${userID}`, {
+            headers: { 'Authorization': `Bot ${process.env.NEXT_PUBLIC_DISCORD_BOT_ID}` }
+        })
+
+        users[userID] = response.data.username;
+    }
+    
+    return users[userID]
 }
 
 export async function GetBackgrounds() {

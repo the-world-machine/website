@@ -64,7 +64,7 @@ function PageStatus(status: string) {
             <Desktop>
             <Window title='Leaderboards' className="">
                 <div className="text-xl text-black">Loading...</div>
-            </Window>  
+            </Window>
             </Desktop>
         )
     } else if (status === 'authing') {
@@ -72,7 +72,7 @@ function PageStatus(status: string) {
           <Desktop>
             <Window title='Leaderboards' className="">
               <div className="text-xl text-black">Authenticating...</div>
-            </Window>  
+            </Window>
           </Desktop>
     )
     } else if (status === 'error') {
@@ -80,7 +80,7 @@ function PageStatus(status: string) {
             <Desktop>
             <Window title='Error!' className="">
                 <div className="text-xl text-black">An error has occurred. Please try again later.</div>
-            </Window>  
+            </Window>
             </Desktop>
         )
     } else if (status === 'unauthenticated') {
@@ -91,7 +91,7 @@ function PageStatus(status: string) {
                 <div className="mx-auto mt-5 scale-120">
                 <button onClick={() => signIn('discord')}>Sign In</button> <button onClick={() => window.location.href = '/'}>Okay</button>
                 </div>
-            </Window>  
+            </Window>
             </Desktop>
         )
     }
@@ -198,14 +198,14 @@ export default function Main() {
                 setRankedSunUsers(await GetLeaderboard('suns'));
                 setRankedTimesShatteredUsers(await GetLeaderboard('times_shattered'));
                 setRankedTimesTransmittedUsers(await GetLeaderboard('times_transmitted'));
-                
+
                 setPageStatus('success');
             } catch (error) {
                 console.error('Error fetching leaderboard data:', error);
                 setPageStatus('error');
             }
         }
-  
+
         grabLeaderboardData();
     }, []);
 
