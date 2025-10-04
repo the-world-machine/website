@@ -119,7 +119,7 @@ export default function Profile() {
     return (
       <Desktop>
         <Window title='Profile' className="max-w-[500px]">
-            <div className='window w-full sticky top-0 bg-opacity-100'>
+            <div className='window w-full sticky top-0 bg-opacity-100 z-10'>
               <div className="font-main flex justify-center">
                   <p className='text-sm sm:text-xl text-center text-black mr-6 my-auto'>{saveStatus}</p>
                   <button
@@ -134,40 +134,33 @@ export default function Profile() {
 
             <div className='font-main my-10 mx-10 grid place-content-center'>
 
-                <h1 className='text-3xl ml-5 text-black text-center'>User Settings</h1>
 
-                <h1 className='text-xl text-black text-center mt-10 mb-5'>Change Translation Language</h1>
-
-                <select title='Change the language displayed after translating a message.' value={userToUpdate?.translation_language} onChange={(e) => updateLanguage(e.currentTarget.value)} className="text-black h-6">
-                  {languages.map((language) => (
-                    <option key={language.value} value={language.value}>{language.name}</option>
-                  ))}
-                </select>
-
-                <h1 className='text-xl text-black text-center mt-10 mb-5 outline-2'>Other Settings</h1>
+                <h1 className='text-3xl ml-5 text-black text-center'>Settings</h1>
                 <div className="field-row mx-auto scale-150">
                   <label className='text-black'><input title='Disable or enable badge notifications. If enabled, this will show you when you get a new badge.' type="checkbox" checked={checked} onChange={updateBadgeNotifications} /> Badge Notifications</label>
                 </div>
 
                 <hr className='my-10' />
 
-                <h1 className='text-3xl mt-2 text-black text-center'>Profile Settings</h1>
+                <h1 className='text-3xl mt-2 text-black text-center'>Profile</h1>
 
-                <h1 className='text-xl text-black text-center mt-5 mb-5'>Change Profile Description</h1>
+                <h1 className='text-xl text-black text-center mt-5 mb-5'>Description</h1>
+                <h1 className='text-black text-sm text-right'>{textLength}/250</h1>
                 <textarea
                   id="description"
                   name="description"
                   title='Change your profile description. This shows up when you run the /profile <user> command.'
                   defaultValue={userToUpdate?.profile_description}
                   onChange={(e) => updateProfileDescription(e)}
-                  maxLength={100}
+                  maxLength={250}
                   className="field-row resize-none text-black text-lg p-2 mb-2 text-center"
                 />
-                <h1 className='text-black text-sm'>{textLength}/100</h1>
 
-                <h1 className='text-xl text-black text-center mt-5 mb-5'>Change Profile Background</h1>
+                <h1 className='text-xl text-black text-center mt-5 mb-5'>Background</h1>
 
                 <BackgroundSelection ownedBackgrounds={userToUpdate?.owned_backgrounds ?? ["Default"]} equippedBackground={userToUpdate?.equipped_bg ?? "Default"} allBackgrounds={items?.backgrounds ?? {}} onChange={updateBackground} />
+
+
             </div>
         </Window>
       </Desktop>

@@ -26,10 +26,9 @@ export default function BackgroundSelection({ ownedBackgrounds, equippedBackgrou
     return (
         <div className='grid place-items-center font-main'>
 
-            <h1 className='text-black text-lg'>Currently Selected: {selectedBackground}</h1>
-
             <img src={allBackgrounds[selectedBackground].image} alt={selectedBackground} width={300} height={0} className='mt-2 mx-5'/>
 
+            <h1 className='text-black text-lg'>Currently Selected: {selectedBackground}</h1>
             <div className='flex overflow-x-auto max-w-[600px] mt-3 bg-[#939393] border-2 border-slate-600'>
                 {ownedBackgrounds.map((background) => (
                     <img key={background} className={'hover:cursor-pointer mx-2 my-3'} onClick={() => UpdateBackground(background)} src={allBackgrounds[background].image} alt={background} width={100} height={0}/>
