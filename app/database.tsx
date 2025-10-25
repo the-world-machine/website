@@ -5,23 +5,35 @@ import { UserData, LeaderboardUser, ItemData, NikogotchiInformation, NikogotchiD
 
 let collection: null | Collection<any> = null
 
-async function connectToDatabase(collection_to_use: string = 'UserData') {
 
+const uri = process.env.NEXT_PUBLIC_DB_URI as string
+const dbClient: MongoClient = new MongoClient(uri)
+dbClient.connect()
+
+async function isConnected(client: MongoClient) {
+  if (!client) {
+    return false;
+  }
+  try {
+    const adminDb = client.db().admin();
+    const result = await adminDb.ping();
+    return result && result.ok === 1;
+  } catch (error) {
+		client.close()
+    return false;
+  }
+}
+async function getCollection(name: string) {
     if (collection != null) { return collection }
+		if (await isConnected(dbClient)) await dbClient.connect()
 
-    const uri = process.env.NEXT_PUBLIC_DB_URI as string
+    const db = dbClient.db('TheWorldMachine')
 
-    const mongoDBClient: MongoClient = new MongoClient(uri)
-
-    await mongoDBClient.connect()
-
-    const db = mongoDBClient.db('TheWorldMachine')
-
-    return db.collection<any>(collection_to_use)
+    return db.collection<any>(name)
 }
 
 export async function Fetch(user: string): Promise<UserData | null> {
-    const user_data_collection = await connectToDatabase();
+    const user_data_collection = await getCollection("UserData");
     const userDataFromDB = await user_data_collection.findOne({ _id: user });
 
     // Check if userDataFromDB is not null
@@ -38,7 +50,7 @@ export async function Fetch(user: string): Promise<UserData | null> {
 
 
 export async function GetNikogotchiData(user: string): Promise<NikogotchiData | null> {
-    const user_data_collection = await connectToDatabase('UserNikogotchis');
+    const user_data_collection = await getCollection('UserNikogotchis');
     const userDataFromDB = await user_data_collection.findOne({ _id: user });
     
     if (userDataFromDB) {
@@ -50,7 +62,7 @@ export async function GetNikogotchiData(user: string): Promise<NikogotchiData | 
 
 
 export async function Update(user: Partial<UserData>, filter: Array<String>) {
-    const user_data_collection = await connectToDatabase();
+    const user_data_collection = await getCollection("UserData");
 
     const filteredData: { [key: string]: any } = {};
       
@@ -73,7 +85,7 @@ export async function Update(user: Partial<UserData>, filter: Array<String>) {
     console.log(user);
 }
 export async function GetLeaderboard(sortBy: string) {
-    const user_data_collection = await connectToDatabase();
+    const user_data_collection = await getCollection("UserData");
     const leaderboard: LeaderboardUser[] = [];
 
     try {
@@ -115,7 +127,7 @@ export async function GetLeaderboard(sortBy: string) {
 
 export async function FetchItemData() {
 
-    const data = await connectToDatabase('ItemData');
+    const data = await getCollection('ItemData');
 
     const itemData = await data.findOne({ access: 'ItemData' });
 
@@ -152,7 +164,7 @@ export async function FetchBlogPosts() {
 
     const blogPosts: BlogPost[] = []
 
-    const blogData = await connectToDatabase('Blog');
+    const blogData = await getCollection('Blog');
 
     const blogPostList = await blogData.find({}).toArray();
 
@@ -173,7 +185,7 @@ export async function UploadBlogPost(post: BlogPost) {
         return;
     }
 
-    const blogData = await connectToDatabase('Blog');
+    const blogData = await getCollection('Blog');
 
     const result = await blogData.insertOne(post);
 
