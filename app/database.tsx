@@ -1,7 +1,10 @@
 'use server'
-import axios, { all } from 'axios';
+import axios, { all, AxiosError } from 'axios';
 import { Collection, MongoClient, ObjectId } from 'mongodb';
 import { UserData, LeaderboardUser, ItemData, NikogotchiInformation, NikogotchiData, BlogPost } from './components/database-parse-type'
+import pLimit from 'p-limit';
+
+const limit = pLimit(3);
 
 let collection: null | Collection<any> = null
 
@@ -89,34 +92,27 @@ export async function GetLeaderboard(sortBy: string) {
     const leaderboard: LeaderboardUser[] = [];
 
     try {
-        const cursor = await user_data_collection.aggregate([{ $sort: { [sortBy]: -1 } }, { $limit: 10 }]);
+        const cursor = await user_data_collection.aggregate([{ $sort: { [sortBy]: -1 } }, { $limit: 15 }]);
         const result = await cursor.toArray();
 
-        const userPromises = result.map(async (doc) => {
-            const user = await GetDiscordData(doc._id);
-
-            if (user === '') {
-                return null; // Return null if the username is empty
-            }
+        const userPromises = result.map((doc) => limit(async () => {
+            const username = await GetDiscordData(doc._id);
+            if (username == "" || ["twm", "the world machine"].some((a)=>username.toLowerCase().includes(a))) return null;
 
             return {
-                name: user,
+                name: username,
                 type: sortBy,
                 data: {
                     ...doc,
                     wool: doc.wool.toLocaleString()
                 } as UserData
-            } as LeaderboardUser; // Ensure the return type is LeaderboardUser
-        });
+            } as LeaderboardUser;
+        }));
 
-        // Use Promise.all to wait for all promises to resolve
         const users = await Promise.all(userPromises);
 
-        // Filter out null values and assert the type
         const validUsers: LeaderboardUser[] = users.filter((user): user is LeaderboardUser => user !== null);
-
-        // Push the resolved data to the leaderboard array
-        leaderboard.push(...validUsers);
+        leaderboard.push(...validUsers.slice(0,10));
     } catch (error) {
         console.error(error);
     }
@@ -139,15 +135,25 @@ export async function FetchItemData() {
 }
 
 const users: any = {};
+const wait = (ms: number) => new Promise(res=>setTimeout(res,ms))
 
 export async function GetDiscordData(userID: string) {
 
     if (users[userID] === undefined) {
+			try {
         const response = await axios.get(`https://discord.com/api/users/${userID}`, {
             headers: { 'Authorization': `Bot ${process.env.NEXT_PUBLIC_DISCORD_BOT_ID}` }
         })
-
+			
         users[userID] = response.data.username;
+			}
+			catch (e: any) {
+				if (e.message === "Request failed with status code 429") {
+					await wait((e.response.data.retry_after+0.5)*1000)
+					return await GetDiscordData(userID)
+				}
+				throw e
+			}
     }
     
     return users[userID]

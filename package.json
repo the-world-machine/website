@@ -14,12 +14,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "98.css": "^0.1.20",
     "@headlessui/react": "^1.7.17",
     "@headlessui/tailwindcss": "^0.2.0",
     "@ts-stack/markdown": "^1.5.0",
     "@types/lossless-json": "^1.0.3",
     "@types/mysql": "^2.15.23",
-    "98.css": "^0.1.20",
     "axios": "^1.6.0",
     "dotenv": "^16.3.1",
     "fs": "^0.0.1-security",
@@ -39,6 +39,7 @@
     "next-auth": "^4.24.4",
     "nextjs": "^0.0.3",
     "node-wav-player": "^0.2.0",
+    "p-limit": "^7.2.0",
     "react": "^18.3.1",
     "react-dom": "^18",
     "react-draggable": "^4.4.6",

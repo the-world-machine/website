@@ -110,14 +110,15 @@ function Page(
                 <p className='text-center text-black'>(Loading may take a while.)</p>
                 <div className="mt-5"/>
 
-                <Header><p className='text-xl mr-2'>Wool</p> <img src={icons.wool_icon}/></Header>
-                <div className="mt-2"/>
-                {AssignToLeaderboard('wool', wool)}
-                <div className="mt-5"/>
 
                 <Header><p className='text-xl mr-2'>Suns</p> <img src={icons.sun_icon}/></Header>
                 <div className="mt-2"/>
                 {AssignToLeaderboard('suns', suns)}
+                <div className="mt-5"/>
+								
+                <Header><p className='text-xl mr-2'>Wool</p> <img src={icons.wool_icon}/></Header>
+                <div className="mt-2"/>
+                {AssignToLeaderboard('wool', wool)}
                 <div className="mt-5"/>
 
                 <Header><p className='text-xl mr-2'>Times Shattered</p> <img src={icons.explode_icon}/></Header>
@@ -194,10 +195,10 @@ export default function Main() {
     useEffect(() => {
         async function grabLeaderboardData() {
             try {
-                setRankedWoolUsers(await GetLeaderboard('wool'));
                 setRankedSunUsers(await GetLeaderboard('suns'));
                 setRankedTimesShatteredUsers(await GetLeaderboard('times_shattered'));
                 setRankedTimesTransmittedUsers(await GetLeaderboard('times_transmitted'));
+                setRankedWoolUsers(await GetLeaderboard('wool'));
 
                 setPageStatus('success');
             } catch (error) {
